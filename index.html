@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="SPECTRA: a continuous, object-centric Task Quality Index for robotic manipulation, learned from a small set of successful demonstrations.">
+  <meta name="keywords" content="SPECTRA, robotic manipulation, task quality, policy evaluation, SE(3), Lie groups, kinematic constraints">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPECTRA: Scoring Manipulation Quality from Object-Centric Constraints</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">SPECTRA: Scoring Manipulation Quality from Object-Centric Constraints</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Anonymous Authors</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Under Review</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark" disabled>
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper (coming soon)</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark" disabled>
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (coming soon)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="./static/images/teaser.png" class="figure-img"
+           alt="SPECTRA learns admissible variation from successful demonstrations and scores new executions.">
+      <h2 class="subtitle has-text-centered">
+        Binary success labels cannot tell a clean execution from one where the object slips or the box
+        is shoved. <span class="spectra">SPECTRA</span> learns the admissible variation of relative object
+        poses from successful demonstrations and assigns every new execution a continuous quality
+        score Q &isin; [0, 1].
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Robotic manipulation is usually judged by a binary success label, yet two successful executions
+            can differ widely in how precisely they were carried out. <span class="spectra">SPECTRA</span>
+            learns task-specific kinematic constraints from a small set of successful demonstrations: the
+            directions of relative object motion that stay consistently regulated, and how much each may
+            vary. New executions are scored by how well they respect these constraints, yielding a single,
+            interpretable quality index that is robot-agnostic and needs no human labels.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Method. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">How It Works</h2>
+        <img src="./static/images/method.png" class="figure-img"
+             alt="Overview of the SPECTRA framework: constraint estimation and policy evaluation.">
+        <p class="figure-caption">
+          <b>Constraint estimation:</b> demonstrations are aligned by sub-task progress, and relative object
+          poses are compared in the tangent space of SE(3). Directions with little variation across
+          demonstrations are marked as constrained. <b>Policy evaluation:</b> a new execution is penalized
+          only when it drifts beyond the learned tolerance along those directions.
+        </p>
+      </div>
+    </div>
+    <!--/ Method. -->
+
+    <!-- Scoring example. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Pinpointing What Went Wrong</h2>
+        <img src="./static/images/scoring_example.png" class="figure-img"
+             alt="Constraint extraction on the SE(3) manifold and frame-by-frame execution scoring.">
+        <p class="figure-caption">
+          Every frame of an execution gets a cost, so <span class="spectra">SPECTRA</span> shows not only
+          <em>how well</em> a task was done but <em>when</em> it went wrong. Here, an execution that still
+          succeeds is scored Q = 0.46 because of deviations during the lift and place phases.
+        </p>
+      </div>
+    </div>
+    <!--/ Scoring example. -->
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>Coming soon.</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            Website template borrowed from <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
