@@ -107,8 +107,6 @@ h3 { font: 600 1.05rem/1.3 var(--sans); }
 .tldr b { font-weight: 700; }
 .tldr .spectra { letter-spacing: .02em; }
 .tldr .qi { white-space: nowrap; font-style: italic; }
-.tldr .q0 { color: #0ad5f6; font-weight: 700; }   /* the title gradient's first colour */
-.tldr .q1 { color: #a520fd; font-weight: 700; }   /* ... and its last */
 .hero .wrap { max-width: 1120px; }
 .tldr { max-width: none; }
 .tldr-2 { display: inline-block; margin-top: .35rem; font-size: .92em; font-weight: 400; color: var(--ink-2); }
