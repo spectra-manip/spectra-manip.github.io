@@ -1,167 +1,260 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="description"
-        content="SPECTRA: a continuous, object-centric Task Quality Index for robotic manipulation, learned from a small set of successful demonstrations.">
-  <meta name="keywords" content="SPECTRA, robotic manipulation, task quality, policy evaluation, SE(3), Lie groups, kinematic constraints">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SPECTRA: Scoring Manipulation Quality from Object-Centric Constraints</title>
-
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
-
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <title>Shades of Success | SPECTRA</title>
+  <meta name="description"
+        content="SPECTRA learns object-centric constraints from a few successful demonstrations and scores how well a manipulation task was performed, Q ∈ [0, 1].">
+  <meta name="keywords" content="SPECTRA, robotic manipulation, task quality, policy evaluation, SE(3), kinematic constraints">
+  <meta property="og:title" content="Shades of Success: Evaluating Manipulation Quality from Object-Centric Constraints">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-
+  <link rel="stylesheet" href="./static/css/style.css">
   <script defer src="./static/js/fontawesome.all.min.js"></script>
-
+  <script defer src="./static/js/data.js"></script>
+  <script defer src="./static/js/simhw_traces.js"></script>
+  <script defer src="./static/js/main.js"></script>
 </head>
 <body>
 
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">SPECTRA: Scoring Manipulation Quality from Object-Centric Constraints</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">Anonymous Authors</span>
-          </div>
+<a class="skip" href="#method">Skip to method</a>
 
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">Under Review</span>
-          </div>
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand"><span class="spectrum-dot"></span>SPECTRA</a>
+    <nav>
+      <a href="#why">Why</a>
+      <a href="#method">Method</a>
+      <a href="#real">Real robot</a>
+      <a href="#results">Results</a>
+      <a href="#demos">Demos</a>
+      <a href="#bibtex">BibTeX</a>
+    </nav>
+  </div>
+  <div class="scroll-progress"><span></span></div>
+</header>
 
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a class="external-link button is-normal is-rounded is-dark" disabled>
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper (coming soon)</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a class="external-link button is-normal is-rounded is-dark" disabled>
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code (coming soon)</span>
-                </a>
-              </span>
-            </div>
-          </div>
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <h1><span class="grad"><em>Shades of Success</em></span></h1>
+    <p class="subtitle">Evaluating Manipulation Quality from Object-Centric Constraints</p>
+
+    <!-- TODO: replace with real authors once de-anonymized -->
+    <p class="authors">Anonymous Authors</p>
+
+    <div class="links">
+      <!-- TODO: fill in the real links -->
+      <a class="btn" href="#" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> Paper</a>
+      <a class="btn" href="#" target="_blank" rel="noopener"><i class="fas fa-scroll"></i> arXiv</a>
+      <a class="btn" href="#" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+      <a class="btn" href="#bibtex"><i class="fas fa-quote-right"></i> BibTeX</a>
+    </div>
+
+    <div class="spectrum-bar" aria-hidden="true"></div>
+
+    <p class="tldr">Same success, different quality.<br>
+      <span class="tldr-2"><span class="spectra">SPECTRA</span> scores the quality of robotic manipulation with a Task Quality Index <span class="qi">Q&nbsp;∈&nbsp;[<span class="q0">0</span>,&nbsp;<span class="q1">1</span>]</span>.</span></p>
+  </div>
+</section>
+
+<!-- ================= WHY (hook video) ================= -->
+<section class="block" id="why">
+  <div class="wrap wide">
+    <!-- Real UR3 runs (2x speed). Left: spectra_best run_010. Right: spectra_best run_014, base cube shoved and
+         tipped; its Q uses poses re-tracked with the push-aware fusion (fuse2_push.py, fixes 1-7). -->
+    <div class="media frame" style="aspect-ratio: 1600 / 768"
+         data-video="static/videos/hero_q.mp4"
+         data-poster="static/images/poster_hero_q.jpg"
+         data-label="Two successful stacks, scored live by SPECTRA"></div>
+  </div>
+
+</section>
+
+<!-- ================= METHOD ================= -->
+<section class="block alt" id="method">
+  <div class="wrap wide">
+    <h2>How it works</h2>
+    <p class="lead">Learn what demonstrations agree on. Penalize what a new execution doesn't.</p>
+    <div class="two-cards cards-top">
+      <div class="card part1">
+        <span class="tag">Part 1</span>
+        <h3>Constraint estimation</h3>
+        <p>Demonstrations are aligned by task progress. Relative-pose directions that vary little across demonstrations are identified as <b>constrained</b>, and their spread defines the admissible variation.</p>
+      </div>
+      <div class="card part2">
+        <span class="tag">Part 2</span>
+        <h3>Policy evaluation</h3>
+        <p>Deviations of an unseen execution along constrained directions are penalized only beyond the admissible variation. The mean cost and a terminal gate are combined into the Task Quality Index <span class="q">Q</span>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap wide">
+    <div class="media frame" style="aspect-ratio: 1280 / 574"
+         data-video="static/videos/overview.mp4"
+         data-poster="static/images/poster_overview.jpg"
+         data-label="Overview: constraints from demonstrations, then scoring new executions"></div>
+  </div>
+
+  <!-- Chaptered video: chips seek to timestamps -->
+  <div class="wrap wide">
+    <div class="oc">
+      <img class="oc-graph" src="static/images/object_centric.png"
+           alt="Object-centric representation: reference r, manipulated m, gripper g and support s, with the five relative-pose pairs (r,m), (s,r), (s,m), (g,m), (g,r)." loading="lazy">
+      <div class="oc-points">
+        <h3>Object-centric, robot-agnostic, no human labels</h3>
+        <ul>
+          <li><b>Relative poses.</b> Five pairs: the manipulated object in the reference's frame, and both objects relative to the gripper and the support.</li>
+          <li><b>Aligned by progress.</b> Demos are split into sub-tasks (reach, grasp, carry, release) and resampled onto a shared progress axis.</li>
+          <li><b>No human labels.</b> The reference comes from 30 successful demonstrations scripted in simulation.</li>
+          <li><b>Constrained where demos agree.</b> At each step, any direction whose spread across 30 demos stays under 4&nbsp;mm is constrained, and that spread becomes its tolerance.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap wide">
+    <h3 class="sub">Where demonstrations agree, the task is constrained</h3>
+    <div class="media frame" id="constraints-video" style="aspect-ratio: 1280 / 514"
+         data-video="static/videos/constraints.mp4"
+         data-poster="static/images/poster_constraints.jpg"
+         data-label="Where demonstrations agree, the task is constrained"></div>
+  </div>
+</section>
+
+<!-- ================= REAL ROBOT ================= -->
+<section class="block" id="real">
+  <div class="wrap">
+    <h2>Learn constraints in simulation, score policy rollouts on hardware</h2>
+  </div>
+
+  <div class="wrap mt-s">
+    <p class="simhw-lbl">Stack Cube</p>
+    <div class="media frame" data-trace-video="stack" style="aspect-ratio: 1000 / 546"
+         data-video="static/videos/simhw_stack.mp4"
+         data-poster="static/images/poster_simhw_stack.jpg"
+         data-label="Stack Cube: a simulated and a real policy rollout, same constraints"></div>
+    <div class="tplots" data-trace="stack"></div>
+    <p class="simhw-lbl mt-s">Place Can</p>
+    <div class="media frame" data-trace-video="can" style="aspect-ratio: 1000 / 572"
+         data-video="static/videos/simhw_can.mp4"
+         data-poster="static/images/poster_simhw_can.jpg"
+         data-label="Place Can: a simulated and a real policy rollout, same constraints"></div>
+    <div class="tplots" data-trace="can"></div>
+  </div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section class="block alt" id="results">
+  <!-- Turn the dial: hidden for now, restore by uncommenting.
+  <div class="wrap">
+    <h2>Turn the dial</h2>
+    <p class="lead">Tilt or roll the object mid-task. <span class="q">Q</span> drops with the size of the deviation, on every task.</p>
+
+    <div class="chips" id="dev-tasks"></div>
+
+    <div class="dial">
+      <div class="dial-ctrl">
+        <div class="dial-q">
+          <span class="lbl">Q</span>
+          <span id="dev-q">0.99</span>
         </div>
+        <div class="qbar"><span id="dev-qbar"></span></div>
+        <label class="dial-label">Commanded <span id="dev-axis">tilt</span>: <b id="dev-deg">clean</b></label>
+        <input type="range" id="dev-range" min="0" max="4" step="1" value="0" aria-label="Deviation">
+        <div class="ticks"><span>clean</span><span>5°</span><span>10°</span><span>25°</span><span>45°</span></div>
+      </div>
+      <div class="dial-chart">
+        <svg id="dev-svg" viewBox="0 0 360 200" role="img" aria-label="Q versus deviation for every task"></svg>
+      </div>
+    </div>
+  </div>
+  -->
+
+  <div class="wrap">
+    <h2>Agreement with human judgment</h2>
+    <p class="lead">15 raters scored 105 rollouts from Diffusion Policy, ACT and π<sub>0.5</sub>. Spearman ρ with the mean rating:</p>
+
+    <div class="row-ctrl">
+      <div class="seg" id="hum-subset">
+        <button data-subset="all" class="on">All rollouts</button>
+        <button data-subset="succ">Successful only</button>
+      </div>
+      <select id="hum-task" aria-label="Task"></select>
+    </div>
+    <div class="bars" id="hum-bars"></div>
+    <p class="note" id="hum-note"></p>
+    <details class="table-view">
+      <summary>Show as table</summary>
+      <div id="hum-table"></div>
+    </details>
+  </div>
+</section>
+
+<!-- ================= DEMO SELECTION ================= -->
+<section class="block" id="demos">
+  <div class="wrap">
+    <h2>Use SPECTRA to score demonstrations and select training data</h2>
+    <p class="lead">Can quality scores pick better training data? An exploratory study on the UR3, for Stack Cube and Place Can.</p>
+
+    <ol class="steps">
+      <li><span class="n">1</span><h3>Scoring</h3><p>180 teleoperated demonstrations per task, each scored with SPECTRA.</p></li>
+      <li><span class="n">2</span><h3>Selection</h3><p>The 100 highest-scoring demonstrations, compared with 100 drawn at random from the same pool.</p></li>
+      <li><span class="n">3</span><h3>Training &amp; evaluation</h3><p>A Diffusion Policy trained on each set, evaluated over 10 trials on the UR3.</p></li>
+    </ol>
+
+    <div class="sel-grid">
+      <figure class="fig">
+        <img src="static/images/teleop_ranking.png" alt="SPECTRA quality Q of 180 teleoperated demonstrations per task, sorted by rank, for Stack Cube and Place Can; the top 100 are shaded." loading="lazy">
+        <figcaption><b>Steps 1–2.</b> Q of every demonstration, sorted. The shaded part is the top 100. Those at Q&nbsp;=&nbsp;0 look fine but are released off target.</figcaption>
+      </figure>
+      <div class="sel-res">
+        <p class="sel-head"><b>Step 3.</b> Successful trials out of 10</p>
+        <div class="selection" id="selection"></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <img src="./static/images/teaser.png" class="figure-img"
-           alt="SPECTRA learns admissible variation from successful demonstrations and scores new executions.">
-      <h2 class="subtitle has-text-centered">
-        Binary success labels cannot tell a clean execution from one where the object slips or the box
-        is shoved. <span class="spectra">SPECTRA</span> learns the admissible variation of relative object
-        poses from successful demonstrations and assigns every new execution a continuous quality
-        score Q &isin; [0, 1].
-      </h2>
+<!-- ================= VIDEO WALL ================= -->
+<!-- Hidden until rollout clips exist: remove `hidden` and restore the nav link. -->
+<section class="block alt" id="videos" hidden>
+  <div class="wrap">
+    <h2>Video wall</h2>
+    <p class="lead">Learned-policy rollouts, each with its SPECTRA score.</p>
+    <div class="row-ctrl">
+      <div class="chips" id="wall-tasks"></div>
+      <div class="seg" id="wall-policy"></div>
+    </div>
+    <div class="row-ctrl">
+      <label class="toggle"><input type="checkbox" id="wall-sort"> sort by Q</label>
+    </div>
+  </div>
+  <div class="wrap wide">
+    <div class="wall" id="wall"></div>
+  </div>
+</section>
+
+<!-- ================= BIBTEX ================= -->
+<section class="block" id="bibtex">
+  <div class="wrap">
+    <h2>BibTeX</h2>
+    <div class="bib">
+<pre><code id="bib-code">Coming soon.</code></pre>
     </div>
   </div>
 </section>
 
-
-<section class="section">
-  <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            Robotic manipulation is usually judged by a binary success label, yet two successful executions
-            can differ widely in how precisely they were carried out. <span class="spectra">SPECTRA</span>
-            learns task-specific kinematic constraints from a small set of successful demonstrations: the
-            directions of relative object motion that stay consistently regulated, and how much each may
-            vary. New executions are scored by how well they respect these constraints, yielding a single,
-            interpretable quality index that is robot-agnostic and needs no human labels.
-          </p>
-        </div>
-      </div>
-    </div>
-    <!--/ Abstract. -->
-  </div>
-</section>
-
-
-<section class="section">
-  <div class="container is-max-desktop">
-    <!-- Method. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3 has-text-centered">How It Works</h2>
-        <img src="./static/images/method.png" class="figure-img"
-             alt="Overview of the SPECTRA framework: constraint estimation and policy evaluation.">
-        <p class="figure-caption">
-          <b>Constraint estimation:</b> demonstrations are aligned by sub-task progress, and relative object
-          poses are compared in the tangent space of SE(3). Directions with little variation across
-          demonstrations are marked as constrained. <b>Policy evaluation:</b> a new execution is penalized
-          only when it drifts beyond the learned tolerance along those directions.
-        </p>
-      </div>
-    </div>
-    <!--/ Method. -->
-
-    <!-- Scoring example. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3 has-text-centered">Pinpointing What Went Wrong</h2>
-        <img src="./static/images/scoring_example.png" class="figure-img"
-             alt="Constraint extraction on the SE(3) manifold and frame-by-frame execution scoring.">
-        <p class="figure-caption">
-          Every frame of an execution gets a cost, so <span class="spectra">SPECTRA</span> shows not only
-          <em>how well</em> a task was done but <em>when</em> it went wrong. Here, an execution that still
-          succeeds is scored Q = 0.46 because of deviations during the lift and place phases.
-        </p>
-      </div>
-    </div>
-    <!--/ Scoring example. -->
-  </div>
-</section>
-
-
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>Coming soon.</code></pre>
-  </div>
-</section>
-
-
-<footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            This website is licensed under a <a rel="license"
-                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-          <p>
-            Website template borrowed from <a
-              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
-          </p>
-        </div>
-      </div>
-    </div>
+<footer class="foot">
+  <div class="wrap">
+    <p>Website licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+    <a href="#top" class="top-link">Back to top ↑</a>
   </div>
 </footer>
 
