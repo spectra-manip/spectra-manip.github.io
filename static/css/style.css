@@ -106,7 +106,7 @@ h3 { font: 600 1.05rem/1.3 var(--sans); }
 .tldr { font: 500 clamp(1.15rem, 2.5vw, 1.45rem)/1.45 var(--serif); max-width: 30em; margin: 0 auto; }
 .tldr b { font-weight: 700; }
 .tldr .spectra { letter-spacing: .02em; }
-.tldr .qi { white-space: nowrap; font-style: italic; }
+.tldr .qi { white-space: nowrap; font-style: italic; color: #1f6bff; }   /* the Q colour of the hero video (q_phone_side_by_side.py Q_COLOR) */
 .hero .wrap { max-width: 1120px; }
 .tldr { max-width: none; }
 .tldr-2 { display: inline-block; margin-top: .35rem; font-size: .92em; font-weight: 400; color: var(--ink-2); }
