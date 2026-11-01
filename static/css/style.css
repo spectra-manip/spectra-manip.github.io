@@ -349,3 +349,6 @@ svg .gridl { stroke: var(--grid); }
 .tplots svg text { font-size: 12px; }
 .tplots svg text.tp-lbl { font-size: 13px; fill: var(--ink-2); }
 #why { padding-top: 1rem; }   /* the hero video sits right under the tagline */
+
+/* touch screens have no hover: keep the play/pause button visible there */
+@media (hover: none) { .media .ctrl { opacity: .85; } }

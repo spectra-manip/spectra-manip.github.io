@@ -54,25 +54,28 @@
     placeholder(el, o);
     if (!o.video) return;
     el._load = () => {
+      // The <video> goes into the page right away: phones (iOS Safari in particular) do not buffer a video that is
+      // not in the document, so waiting for 'loadeddata' before inserting it left them on the placeholder for good.
+      // muted / playsinline / autoplay must be attributes, not just properties, for iOS to allow autoplay.
       const v = document.createElement('video');
-      v.muted = !o.controls; v.playsInline = true; v.loop = o.loop; v.preload = 'metadata';
+      if (!o.controls) { v.muted = true; v.setAttribute('muted', ''); }
+      v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
+      v.loop = o.loop; v.preload = o.controls ? 'metadata' : 'auto';
       if (o.poster) v.poster = o.poster;
-      if (o.autoplay && !reduceMotion) v.dataset.autoplay = '1';
-      v.addEventListener('loadeddata', () => {
-        el.innerHTML = '';
-        el.appendChild(v);
-        if (o.controls) { v.controls = true; o.onReady && o.onReady(v); return; }
-        const btn = document.createElement('button');
-        btn.className = 'ctrl'; btn.setAttribute('aria-label', 'Play/pause');
-        const sync = () => { btn.innerHTML = v.paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>'; };
-        btn.onclick = () => { v.paused ? v.play() : v.pause(); };
-        v.addEventListener('play', sync); v.addEventListener('pause', sync); sync();
-        el.appendChild(btn);
-        playObserver.observe(v);
-        o.onReady && o.onReady(v);
-      }, { once: true });
-      v.addEventListener('error', () => {}, { once: true }); // keep the placeholder
+      if (o.autoplay && !reduceMotion) { v.dataset.autoplay = '1'; v.autoplay = true; v.setAttribute('autoplay', ''); }
+      v.addEventListener('error', () => placeholder(el, o), { once: true });   // missing file: back to the placeholder
       v.src = o.video;
+      el.innerHTML = '';
+      el.appendChild(v);
+      if (o.controls) { v.controls = true; o.onReady && o.onReady(v); return; }
+      const btn = document.createElement('button');
+      btn.className = 'ctrl'; btn.setAttribute('aria-label', 'Play/pause');
+      const sync = () => { btn.innerHTML = v.paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>'; };
+      btn.onclick = () => { v.paused ? v.play() : v.pause(); };
+      v.addEventListener('play', sync); v.addEventListener('pause', sync); sync();
+      el.appendChild(btn);
+      playObserver.observe(v);
+      if (o.onReady) v.addEventListener('loadedmetadata', () => o.onReady(v), { once: true });
     };
     loadObserver.observe(el);
   }
