@@ -16,13 +16,21 @@
   // Media slots: a <video> if the file exists, otherwise a labeled placeholder.
   // Videos load when near the viewport and only play while visible.
   // ---------------------------------------------------------------------------
+  // Safari rejects play() that comes before the video can play or before the page counts as "active", and it
+  // does not retry by itself; so remember which autoplay videos are on screen and retry them when the video
+  // becomes playable and on the first user gesture.
+  const onScreen = new Set();
+  const tryPlay = v => { if (v.paused) v.play().catch(() => {}); };
   const playObserver = new IntersectionObserver(entries => {
     entries.forEach(({ target, isIntersecting }) => {
       if (!target.dataset.autoplay) return;
-      if (isIntersecting) target.play().catch(() => {});
-      else target.pause();
+      if (isIntersecting) { onScreen.add(target); tryPlay(target); }
+      else { onScreen.delete(target); target.pause(); }
     });
   }, { threshold: 0.25 });
+  const kick = () => onScreen.forEach(tryPlay);
+  ['touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(ev => addEventListener(ev, kick, { passive: true }));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
 
   const loadObserver = new IntersectionObserver(entries => {
     entries.forEach(({ target, isIntersecting }) => {
@@ -63,6 +71,7 @@
       v.loop = o.loop; v.preload = o.controls ? 'metadata' : 'auto';
       if (o.poster) v.poster = o.poster;
       if (o.autoplay && !reduceMotion) { v.dataset.autoplay = '1'; v.autoplay = true; v.setAttribute('autoplay', ''); }
+      v.addEventListener('canplay', () => { if (onScreen.has(v)) tryPlay(v); });
       v.addEventListener('error', () => placeholder(el, o), { once: true });   // missing file: back to the placeholder
       v.src = o.video;
       el.innerHTML = '';
@@ -75,6 +84,7 @@
       v.addEventListener('play', sync); v.addEventListener('pause', sync); sync();
       el.appendChild(btn);
       playObserver.observe(v);
+      v.addEventListener('click', () => { v.paused ? v.play().catch(() => {}) : v.pause(); });   // tap to play / pause
       if (o.onReady) v.addEventListener('loadedmetadata', () => o.onReady(v), { once: true });
     };
     loadObserver.observe(el);

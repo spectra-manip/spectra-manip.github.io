@@ -377,3 +377,5 @@ svg .gridl { stroke: var(--grid); }
 .btn.soon { cursor: default; }
 .btn.soon:hover { transform: none; opacity: 1; }
 .btn.soon small { font-weight: 400; opacity: .7; font-size: .8em; }
+
+.media video { cursor: pointer; }
