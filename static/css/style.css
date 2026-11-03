@@ -372,3 +372,8 @@ svg .gridl { stroke: var(--grid); }
 @media (max-width: 520px) { .rated { --per: 2; } }
 .lead.one-line { max-width: none; }
 @media (min-width: 900px) { .lead.one-line { white-space: nowrap; } }
+
+/* hero buttons that have no link yet */
+.btn.soon { cursor: default; }
+.btn.soon:hover { transform: none; opacity: 1; }
+.btn.soon small { font-weight: 400; opacity: .7; font-size: .8em; }
