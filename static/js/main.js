@@ -410,9 +410,23 @@
         Object.entries(rows).map(([t, rr]) => `<tr><td>${t}</td>${ms.map(m => `<td>${fmt(rr[m.id])}</td>`).join('')}</tr>`).join('')
       }</tbody></table></div>`;
     }
+    // one rated rollout per task: all of them for "Overall", only the chosen task otherwise
+    const vids = $('#hum-videos'), tiles = {};
+    (D.rated || []).forEach(r => {
+      const f = document.createElement('figure'); f.className = 'rated-item';
+      f.innerHTML = `<div class="media"></div><figcaption><b>${r.task}</b><span>human ${r.human.toFixed(1)}/5</span><span class="rq">Q&nbsp;=&nbsp;${r.q.toFixed(2)}</span></figcaption>`;
+      vids.appendChild(f);
+      mountMedia(f.querySelector('.media'), { video: `static/videos/rated/${r.task}.mp4`, poster: `static/videos/rated/${r.task}.jpg`, label: r.task });
+      tiles[r.task] = f;
+    });
+    const showVideos = () => {
+      const one = sel.value !== 'Overall' && tiles[sel.value];
+      vids.classList.toggle('single', !!one);
+      Object.entries(tiles).forEach(([t, f]) => { f.hidden = !!one && t !== sel.value; });
+    };
     $$('#hum-subset button').forEach(b => b.onclick = () => { subset = b.dataset.subset; update(); });
-    sel.onchange = update;
-    update();
+    sel.onchange = () => { update(); showVideos(); };
+    update(); showVideos();
   })();
 
   // ---------------------------------------------------------------------------
