@@ -126,14 +126,14 @@ SPECTRA.wallTasks.forEach(task => {
 });
 
 // ---------------------------------------------------------------------------
-// One human-rated rollout per task (the clip the raters watched, cropped).
+// One human-rated rollout per task, re-rendered photoreal (full frame), a mix of good and poor executions.
 // human: mean of 15 ratings on the 1-5 scale; q: SPECTRA Q of the same rollout.
 // ---------------------------------------------------------------------------
 SPECTRA.rated = [
-  { task: 'StackCube',    policy: 'ACT',  human: 3.07, q: 0.51 },
+  { task: 'StackCube',    policy: 'π0.5', human: 2.60, q: 0.38 },
   { task: 'PlaceSphere',  policy: 'ACT',  human: 4.93, q: 1.00 },
-  { task: 'PegInsertion', policy: 'DP',   human: 4.47, q: 0.86 },
-  { task: 'PlugCharger',  policy: 'π0.5', human: 4.53, q: 0.88 },
+  { task: 'PegInsertion', policy: 'ACT',  human: 3.13, q: 0.49 },
+  { task: 'PlugCharger',  policy: 'DP',   human: 5.00, q: 0.93 },
   { task: 'PokeCube',     policy: 'DP',   human: 4.00, q: 0.75 },
   { task: 'CloseDrawer',  policy: 'ACT',  human: 4.47, q: 0.87 },
   { task: 'PlaceCan',     policy: 'π0.5', human: 3.73, q: 0.69 },
