@@ -365,8 +365,8 @@ svg .gridl { stroke: var(--grid); }
 .rated-item .rq { color: #1f6bff; font-weight: 600; }
 .rated.single .rated-item { flex-basis: min(400px, 100%); }
 .rated.single figcaption { font-size: 1.15rem; gap: .2rem; margin-top: .7rem; }
-.rated.single figcaption b { font-size: 1.2rem; }
-.rated.single figcaption span:not(.rq) { font-size: 1.4rem; color: var(--ink-2); font-weight: 600; }
-.rated.single .rq { font-size: 1.6rem; }
+.rated.single figcaption b { display: none; }   /* the dropdown already names the task */
+.rated.single figcaption span:not(.rq) { font-size: 1.15rem; color: var(--ink-2); font-weight: 600; }
+.rated.single .rq { font-size: 1.3rem; }
 @media (max-width: 900px) { .rated { --per: 3; } }
 @media (max-width: 520px) { .rated { --per: 2; } }
