@@ -352,3 +352,12 @@ svg .gridl { stroke: var(--grid); }
 
 /* touch screens have no hover: keep the play/pause button visible there */
 @media (hover: none) { .media .ctrl { opacity: .85; } }
+
+/* the seven tasks: small looping clips of a successful demonstration */
+.tasks { display: grid; grid-template-columns: repeat(7, 1fr); gap: .75rem; }
+.task { margin: 0; }
+.task .media { border: 1px solid var(--line); border-radius: 10px; }
+.task .media .ctrl { display: none; }
+.task figcaption { text-align: center; font-size: .82rem; font-weight: 600; color: var(--ink-2); margin-top: .45rem; }
+@media (max-width: 900px) { .tasks { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 520px) { .tasks { grid-template-columns: repeat(2, 1fr); } }
