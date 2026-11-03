@@ -363,7 +363,10 @@ svg .gridl { stroke: var(--grid); }
                          font-size: .74rem; color: var(--ink-3); text-align: center; line-height: 1.3; }
 .rated-item figcaption b { color: var(--ink-2); font-size: .8rem; }
 .rated-item .rq { color: #1f6bff; font-weight: 600; }
-.rated.single .rated-item { flex-basis: min(560px, 100%); }
-.rated.single figcaption { font-size: .85rem; }
+.rated.single .rated-item { flex-basis: min(400px, 100%); }
+.rated.single figcaption { font-size: 1.15rem; gap: .2rem; margin-top: .7rem; }
+.rated.single figcaption b { font-size: 1.2rem; }
+.rated.single figcaption span:not(.rq) { font-size: 1.4rem; color: var(--ink-2); font-weight: 600; }
+.rated.single .rq { font-size: 1.6rem; }
 @media (max-width: 900px) { .rated { --per: 3; } }
 @media (max-width: 520px) { .rated { --per: 2; } }
