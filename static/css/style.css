@@ -370,3 +370,5 @@ svg .gridl { stroke: var(--grid); }
 .rated.single .rq { font-size: 1.3rem; }
 @media (max-width: 900px) { .rated { --per: 3; } }
 @media (max-width: 520px) { .rated { --per: 2; } }
+.lead.one-line { max-width: none; }
+@media (min-width: 900px) { .lead.one-line { white-space: nowrap; } }
